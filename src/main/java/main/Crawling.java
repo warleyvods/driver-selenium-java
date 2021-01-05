@@ -13,7 +13,7 @@ public class Crawling {
         ESTADO estado;
 
         String cpf = "03964879126";
-        String senha = "Cpktnwt1";
+        String senha = "Cpktnwt";
 
 
         Thread tr = new Thread(() -> {
