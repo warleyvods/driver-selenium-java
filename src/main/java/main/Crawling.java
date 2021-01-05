@@ -10,10 +10,11 @@ import static main.Frequencia.registrarFrequencia;
 public class Crawling {
     public static void main(String[] args) {
 
-        ESTADO estado;
 
         String cpf = "03964879126";
         String senha = "Cpktnwt";
+        ESTADO estado;
+
 
 
         Thread tr = new Thread(() -> {
