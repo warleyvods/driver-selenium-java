@@ -6,15 +6,13 @@ import java.time.LocalDateTime;
 import static main.Frequencia.registrarFrequencia;
 
 
-
 public class Crawling {
     public static void main(String[] args) {
 
 
         String cpf = "03964879126";
-        String senha = "Cpktnwt";
-        ESTADO estado;
-
+        String senha = "Cpktnwt1";
+        final ESTADO[] estado = {ESTADO.INICIO_EXPEDIENTE};
 
 
         Thread tr = new Thread(() -> {
@@ -23,52 +21,57 @@ public class Crawling {
                     Thread.sleep(1000);
 
                     LocalDateTime now = LocalDateTime.now();
+                    System.out.println(now.getHour() + ":" + now.getMinute() + ":" + now.getSecond());
 
                     //entra no IF às 7:45h
-                    if (now.getHour() == 7 && now.getMinute() == 45 && estado.equals(ESTADO.INICIO_EXPEDIENTE)) {
+                    if (now.getHour() == 7 && now.getMinute() == 45 && estado[0].equals(ESTADO.INICIO_EXPEDIENTE)) {
 
                         //Aguarda entre 0 e 20 minutos
                         Thread.sleep(getDelay(20));
+                        new SMS("BATEU PONTO");
 
                         //Registra o ponto (início de expediente)
-                        registrarFrequencia(cpf, senha);
+//                        registrarFrequencia(cpf, senha);
+
 
                         //altera o próximo passo para ALMOÇO
-                        estado = ESTADO.ALMOCO;
+                        estado[0] = ESTADO.ALMOCO;
 
                         //entra no IF às 12:00h
-                    } else if (now.getHour() == 12 && now.getMinute() == 0 && estado.equals(ESTADO.ALMOCO)) {
+                    } else if (now.getHour() == 12 && now.getMinute() == 0 && estado[0].equals(ESTADO.ALMOCO)) {
                         //Aguarda entre 0 e 5 minutos
                         Thread.sleep(getDelay(5));
-
+                        new SMS("BATEU PONTO");
                         //registra o ponto (saída para o almoço)
-                        registrarFrequencia(cpf, senha);
+//                        registrarFrequencia(cpf, senha);
 
                         //aguarda entre 1:00h e 1:05
                         Thread.sleep(getDelay(5) + (60 * 60 * 1000));
 
                         //registra o ponto (volta do almoço)
-                        registrarFrequencia(cpf, senha);
+//                        registrarFrequencia(cpf, senha);
+                        new SMS("BATEU PONTO");
 
                         //altera o próximo passo para FIM_EXPEDIENTE
-                        estado = ESTADO.FIM_EXPEDIENTE;
+                        estado[0] = ESTADO.FIM_EXPEDIENTE;
 
                         //entra no IF às 17:00
-                    } else if (now.getHour() == 17 && now.getMinute() == 0 && estado.equals(ESTADO.FIM_EXPEDIENTE)) {
+                    } else if (now.getHour() == 17 && now.getMinute() == 0 && estado[0].equals(ESTADO.FIM_EXPEDIENTE)) {
 
                         //aguarda entre 0 e 20 minutos
                         Thread.sleep(getDelay(20));
 
                         //registra o ponto (fim de expediente)
-                        registrarFrequencia(cpf, senha);
+//                        registrarFrequencia(cpf, senha);
+                        new SMS("BATEU PONTO");
 
                         //altera o próximo passo para INICIO_EXPEDIENTE
-                        estado = ESTADO.INICIO_EXPEDIENTE;
+                        estado[0] = ESTADO.INICIO_EXPEDIENTE;
 
                     }
 
 
-                } catch (InterruptedException | IOException ie) {
+                } catch (InterruptedException ie) {
                     ie.getMessage();
                 }
             }
@@ -81,11 +84,11 @@ public class Crawling {
 
         int horaInicioExecucao = LocalDateTime.now().getHour();
         if (horaInicioExecucao >= 8 && horaInicioExecucao <= 12) {
-            estado = ESTADO.ALMOCO;
+            estado[0] = ESTADO.ALMOCO;
         } else if (horaInicioExecucao > 12 && horaInicioExecucao <= 17) {
-            estado = ESTADO.FIM_EXPEDIENTE;
+            estado[0] = ESTADO.FIM_EXPEDIENTE;
         } else {
-            estado = ESTADO.INICIO_EXPEDIENTE;
+            estado[0] = ESTADO.INICIO_EXPEDIENTE;
         }
 
         tr.start();
